@@ -36,10 +36,16 @@ int main(int argc, char* argv[]) {
     
     //TODO
     /* You can call the pathfinder function from here */
+    
+    Graph * g = new Graph();
+    
     ifstream infile(graph_filename);
     string id1, id2;
     while (infile >> id1 >> id2) {
-        pathfinder(id1, id2);
+        Node * p1 = new Node(id1);
+        Node * p2 = new Node(id2);
+        
+        g->pathfinder(p1, p2);
     }
 
     /*
@@ -57,6 +63,7 @@ int main(int argc, char* argv[]) {
      cout << endl;
      }
      */
+    return 0;
 }  
 
 
@@ -138,3 +145,4 @@ to = NULL;
 from = NULL;
 weight = 1;
 
+*/

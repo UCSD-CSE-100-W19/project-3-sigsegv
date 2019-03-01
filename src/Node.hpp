@@ -6,15 +6,15 @@
 using namespace std;
 
 class Node {
-protected:
+public:
     string id;      // id value inside of Node
     bool visited;   // flag if Node was visited or not
     Node* prev;       // previously visited Node
     int dist;       // distance from root to Node
-    vector<string> adj; // vector containing all adjacent Nodes
-    
-public:
-    Node(str) : id(str), visited(false), prev(NULL), dist(0), adj(new vector<string>()) {}
+    vector<Node*> adj; // vector containing all adjacent Nodes
+
+    Node() : id(0), visited(false), prev(NULL), dist(0), adj(0) {}
+    Node(string str) : id(str), visited(false), prev(NULL), dist(0), adj(0) {}
 };
 
 #endif  // GRAPH_HPP

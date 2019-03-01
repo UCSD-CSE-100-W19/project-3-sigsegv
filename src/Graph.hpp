@@ -2,17 +2,18 @@
 #define GRAPH_HPP
 
 #include <iostream>
-#include <Node.hpp>
-#include <Edge.hpp>
+#include <vector>
+#include "Node.hpp"
+#include "Edge.hpp"
 
 using namespace std;
 
 class Graph {
-protected:
+public:
     //MAYBE ADD CLASS DATA STRUCTURE(S) HERE
     vector<Node> nodes;
     vector<Edge> edges;
-public:
+    
     Graph(void);
     
     ~Graph(void);

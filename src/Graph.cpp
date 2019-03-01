@@ -14,15 +14,16 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <queue>
+#include <stack>
 
 using namespace std;
 
 const int INFINITY = 2147483647;
 
-Graph::Graph(void)
-: nodes(0) {}
+Graph::Graph() : nodes(0), edges(0) {}
 
-Graph::~Graph(void) {
+Graph::~Graph() {
     for (auto itr : nodes) {
         delete itr.second;
     }
@@ -30,12 +31,12 @@ Graph::~Graph(void) {
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
 //TODO
-void addNodeAndEdge(string from, string to) {
-    Node toNode = new Node(to);
-    Node fromNode = new Node(from);
-    nodes.push_back(toNode);
-    Edge newEdge = newEdge(toNode, fromNode)
-    edges.push_back(newEdge);
+void Graph::addNodeAndEdge(string from, string to) {
+    Node * toNode = new Node(to);
+    Node * fromNode = new Node(from);
+    nodes.push_back(*toNode);
+    Edge * newEdge = new Edge(toNode, fromNode);
+    edges.push_back(*newEdge);
 }
 
 /* Read in relationships from an inputfile to create a graph */
@@ -75,28 +76,29 @@ bool Graph::loadFromFile(const char* in_filename) {
 
 /* Implement pathfinder*/
 bool Graph::pathfinder(Node* from, Node* to) {
-    queue<Node> queue;
+    queue<Node*> queue;
     
     for (int k = 0; k < nodes.size(); k++) {
-        nodes[i].dist = INFINITY;
-        nodes[i].prev = NULL;
+        nodes[k].dist = INFINITY;
+        nodes[k].prev = NULL;
     }
     
     stack<Node> path;
-    queue.enqueue(*from);
-    *from.dist = 0;
-    *from.visited = true;
+    queue.push(from);
+    from->dist = 0;
+    from->visited = true;
     Node* curr = from;
     while (curr != to) {
-        curr = queue.dequeue();
+        curr = queue.front();
+        queue.pop();
         //for each neighbor of curr
-        for (int i = 0; i < curr.adj.size(); i++) {
-            Node n = curr.adj[i];
-            if (n.dist == INFINITY) {
-                n.dist = curr.dist+1;
-                n.prev = curr;
-                n.visited = true;
-                queue.enqueue(n);
+        for (int i = 0; i < curr->adj.size(); i++) {
+            Node* n = curr->adj[i];
+            if (n->dist == INFINITY) {
+                n->dist = curr->dist+1;
+                n->prev = curr;
+                n->visited = true;
+                queue.push(n);
             }
         }
     }

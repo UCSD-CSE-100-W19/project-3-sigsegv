@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include "Graph.hpp"
+//#include "Graph.cpp"
 
 using namespace std;
 
@@ -34,115 +35,37 @@ int main(int argc, char* argv[]) {
     char* pairs_filename = argv[2];
     char* output_filename = argv[3];
     
-    //TODO
-    /* You can call the pathfinder function from here */
-    
     Graph * g = new Graph();
     
-    ifstream infile(graph_filename);
+    // open graph file
+    ifstream graphfile(graph_filename);
     string id1, id2;
-    while (infile >> id1 >> id2) {
-        Node * p1 = new Node(id1);
-        Node * p2 = new Node(id2);
-        
-        g->pathfinder(p1, p2);
-    }
-
-    /*
-     // Move this to main()
-     // if no path found, print empty line
-     if (path.top() != *to) {
-     cout << endl;
-     return false;
-     // else, print out path
-     } else {
-     while (!path.empty()) {
-     cout << path.top() << " ";
-     path.pop();
-     }
-     cout << endl;
-     }
-     */
-    return 0;
-}  
-
-
-/*
- 
- NOTES
-
-
-bool Graph::pathfinder(Node* from, Node* to) {
-    queue<Node> queue;
-    stack<Node> path;
-    queue.queue(*from);
     
-    queue.enqueue(*from);
-    *from.dist = 0;
-    *from.visited = true;
-    Node* curr = from;
-    while (curr != to) {
-        curr = queue.dequeue();
-        //for each neighbor of curr
-        for (int i = 0; i < curr.adj.size(); i++) {
-            Node n = curr.adj[i];
-            if (n.dist == INFINITY) {
-                n.dist = curr.dist+1;
-                n.prev = curr;
-                n.visited = true;
-                queue.enqueue(n);
-            }
-        }
+    // read in all ids from graph_filename
+    while (graphfile >> id1 >> id2) {
+        // add nodes and edges to graph
+        g->addNodesAndEdge(id1, id2);
     }
-    // if no path found, print empty line
-    if (path.top() != *to) {
-        cout << endl;
-        return false;
-    // else, print out path
-    } else {
-        while (!path.empty()) {
-            cout << path.top() << " ";
-            path.pop();
-        }
-        cout << endl;
+    // close infile
+    graphfile.close();
+    
+    // open pairs file
+    ifstream pairfile(pairs_filename);
+    // open output file
+    ofstream fout(output_filename);
+    
+    // get pairs from file
+    string shortestPath;
+    string p1, p2;
+    while (pairfile >> p1 >> p2) {
+        Node * node1 = g->getNode(p1);
+        Node * node2 = g->getNode(p2);
+        shortestPath = g->pathfinder(node1, node2);
+        fout << shortestPath;
     }
-    return true;
+    // close in/out file
+    pairfile.close();
+    fout.close();
+    
+    return 0;
 }
-
-Graph()
-protected:
-vector<Node> nodes;
-vector<Edge> edges;
-
-void addNodeAndEdge(string to, string from) {
-    Node toNode = new Node(to);
-    Node fromNode = new Node(from);
-    nodes.push_back(toNode);
-    Edge newEdge = newEdge(toNode, fromNode)
-    edges.push_back(newEdge);
-}
-
-Node()
-protected:
-string s;
-bool visited;
-Node* prev;
-int dist;
-vector<string> adj;
-const int INFINITY = 2147483647;
-
-visited = false;
-prev = NULL;
-dist = INFINITY;
-
-Edge()
-protected:
-Node* to;
-Node* from;
-int weight;
-
-to = NULL;
-from = NULL;
-weight = 1;
-
-*/

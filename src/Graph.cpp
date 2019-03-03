@@ -16,25 +16,56 @@
 #include <utility>
 #include <queue>
 #include <stack>
+#include <list>
+#include <unordered_map>
 
 using namespace std;
 
-const int INFINITY = 2147483647;
 
 Graph::Graph() : nodes(0), edges(0) {}
 
 Graph::~Graph() {
-    for (auto itr : nodes) {
-        delete itr.second;
+    while(!nodes.empty()) {
+        nodes.pop_back();
     }
+    while(!edges.empty()) {
+        edges.pop_back();
+    }
+}
+
+bool Graph::containsNode(Node * n) {
+    for (int i=0; i<nodes.size(); i++) {
+        if (nodes.at(i).id == n->id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Node* Graph::getNode(string id) {
+    return nodeMap.at(id);
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
 //TODO
-void Graph::addNodeAndEdge(string from, string to) {
+void Graph::addNodesAndEdge(string from, string to) {
     Node * toNode = new Node(to);
     Node * fromNode = new Node(from);
+    //push back actual to Node object
     nodes.push_back(*toNode);
+    // add Node to nodeMap
+    nodeMap.insert({toNode->id, toNode});
+    
+    // if fromNode not in Graph, add it to Graph
+    if (!containsNode(fromNode)) {
+        //push back actual from Node object
+        nodes.push_back(*fromNode);
+        nodeMap.insert({fromNode->id, fromNode});
+    }
+    // add fromNode and toNode to adj vectors
+    fromNode->adj.push_back(toNode);
+    toNode->adj.push_back(fromNode);
+    // add new edge to edges vector
     Edge * newEdge = new Edge(toNode, fromNode);
     edges.push_back(*newEdge);
 }
@@ -62,7 +93,7 @@ bool Graph::loadFromFile(const char* in_filename) {
         }
         
         // add node and edge to Graph
-        addNodeAndEdge(record[0],record[1]);
+        addNodesAndEdge(record[0],record[1]);
     }
     
     if (!infile.eof()) {
@@ -75,15 +106,17 @@ bool Graph::loadFromFile(const char* in_filename) {
 }
 
 /* Implement pathfinder*/
-bool Graph::pathfinder(Node* from, Node* to) {
+// return string containing shortest path between from and to
+
+string Graph::pathfinder(Node* from, Node* to) {
+    // infinity = numeric_limits<int>::max()
     queue<Node*> queue;
     
     for (int k = 0; k < nodes.size(); k++) {
-        nodes[k].dist = INFINITY;
+        nodes[k].dist = numeric_limits<int>::max();
         nodes[k].prev = NULL;
     }
-    
-    stack<Node> path;
+
     queue.push(from);
     from->dist = 0;
     from->visited = true;
@@ -94,7 +127,7 @@ bool Graph::pathfinder(Node* from, Node* to) {
         //for each neighbor of curr
         for (int i = 0; i < curr->adj.size(); i++) {
             Node* n = curr->adj[i];
-            if (n->dist == INFINITY) {
+            if (n->dist == numeric_limits<int>::max()) {
                 n->dist = curr->dist+1;
                 n->prev = curr;
                 n->visited = true;
@@ -102,13 +135,35 @@ bool Graph::pathfinder(Node* from, Node* to) {
             }
         }
     }
-    return true;
+    
+    // if no path found, return empty line
+    if (queue.back() != to) {
+        return "\n";
+        
+    // else, get and return the path
+    } else {
+        vector<string> pathVec;
+        string pathStr = "";
+        
+        // get path
+        curr = to;
+        while(curr->prev != NULL) {
+            pathVec.push_back(curr->id);
+            curr = curr->prev;
+        }
+        
+        // turn path into string
+        while(!pathVec.empty()) {
+            pathStr += pathVec.back() + " ";
+            pathVec.pop_back();
+        }
+        pathStr += "\n";
+        return pathStr;
+    }
 }
-
 
 /* Implement social gathering*/
 //TODO
 void Graph::socialgathering(vector<string>& invitees, const int& k) {
     
 }
-

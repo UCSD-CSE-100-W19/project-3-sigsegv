@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include "Node.hpp"
 #include "Edge.hpp"
 
@@ -13,10 +14,13 @@ public:
     //MAYBE ADD CLASS DATA STRUCTURE(S) HERE
     vector<Node> nodes;
     vector<Edge> edges;
+    unordered_map<string,Node*> nodeMap;
     
-    Graph(void);
+    //const int INFINITY = numeric_limits<int>::max();
     
-    ~Graph(void);
+    Graph();
+    
+    ~Graph();
     
     //MAYBE ADD SOME MORE METHODS HERE SO AS TO ANSWER QUESTIONS IN YOUR PA
     
@@ -24,11 +28,15 @@ public:
     
     bool loadFromFile(const char* in_filename);
     
-    bool pathfinder(Node* from, Node* to);
+    string pathfinder(Node* from, Node* to);
     
     void socialgathering(vector<string>& invitees, const int& k);
     
-    void addNodeAndEdge(string from, string to);
+    void addNodesAndEdge(string from, string to);
+    
+    bool containsNode(Node * n);
+    
+    Node* getNode(string id);
 };
 
 #endif  // GRAPH_HPP

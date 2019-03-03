@@ -15,6 +15,7 @@ public:
 
     Node() : id(0), visited(false), prev(NULL), dist(0), adj(0) {}
     Node(string str) : id(str), visited(false), prev(NULL), dist(0), adj(0) {}
+    
 };
 
-#endif  // GRAPH_HPP
+#endif  // NODE_HPP

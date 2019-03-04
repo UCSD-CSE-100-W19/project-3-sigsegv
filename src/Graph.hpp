@@ -34,7 +34,7 @@ public:
     
     void addNodesAndEdge(string from, string to);
     
-    bool containsNode(Node * n);
+    bool containsNode(string id);
     
     Node* getNode(string id);
 };

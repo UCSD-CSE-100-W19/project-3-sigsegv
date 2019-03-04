@@ -34,13 +34,10 @@ Graph::~Graph() {
     }
 }
 
-bool Graph::containsNode(Node * n) {
-    for (unsigned int i = 0; i < nodes.size() - 1; i++) {
-        if (nodes.at(i)->id == n->id) {
-            return true;
-        }
-    }
-    return false;
+bool Graph::containsNode(string id) {
+    if (nodeMap.count(id) > 0) return true;
+    else return false;
+    
 }
 
 Node* Graph::getNode(string id) {
@@ -50,25 +47,34 @@ Node* Graph::getNode(string id) {
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
 //TODO
 void Graph::addNodesAndEdge(string from, string to) {
-    Node * toNode = new Node(to);
-    Node * fromNode = new Node(from);
-    //push back actual to Node object
-    nodes.push_back(toNode);
-    // add Node to nodeMap
-    nodeMap[toNode->id] = toNode;
+    Node * toNode;
+    Node * fromNode;
+    // if to node not in graph
+    if (!containsNode(to)) {
+        toNode = new Node(to);
+        nodes.push_back(toNode);
+        nodeMap[toNode->id] = toNode;
+    } else {
+        toNode = nodeMap[to];
+    }
     
-    // if fromNode not in Graph, add it to Graph
-    if (!containsNode(fromNode)) {
-        //push back actual from Node object
+    // if from node not in graph
+    if (!containsNode(from)) {
+        fromNode = new Node(from);
         nodes.push_back(fromNode);
         nodeMap[fromNode->id] = fromNode;
+    } else {
+        fromNode = nodeMap[from];
     }
+    
     // add fromNode and toNode to adj vectors
     fromNode->adj.push_back(toNode);
     toNode->adj.push_back(fromNode);
+    
     // add new edge to edges vector
-    Edge * newEdge = new Edge(toNode, fromNode);
-    edges.push_back(newEdge);
+    // if edge not in edges
+    //Edge * newEdge = new Edge(toNode, fromNode);
+    //edges.push_back(newEdge);
 }
 
 /* Read in relationships from an inputfile to create a graph */
@@ -112,49 +118,69 @@ bool Graph::loadFromFile(const char* in_filename) {
 string Graph::pathfinder(Node* from, Node* to) {
     // infinity = numeric_limits<int>::max()
     queue<Node*> queue;
-    
+
     for (unsigned int k = 0; k < nodes.size(); k++) {
         nodes[k]->dist = numeric_limits<int>::max();
         nodes[k]->prev = NULL;
     }
-
+    
     queue.push(from);
     from->dist = 0;
     from->visited = true;
     Node* curr = from;
+    int i = 0;
     while (!queue.empty()) {
+        //cout << "iter #" << i << endl;
         curr = queue.front();
         queue.pop();
-		cout << "Before iterating through curr's adj vector" << endl;
+        //cout << "curr = " << curr->id << endl;
+        //cout << "Before iterating through curr's adj vector" << endl;
         //for each neighbor of curr
         for (unsigned int i = 0; i < curr->adj.size(); i++) {
-			cout << "In for loop of curr->adj.size()" << endl;
+            //cout << "In for loop of curr->adj.size()" << endl;
+            //cout << "  i = " << i << endl;
             Node* n = curr->adj[i];
+            
             if (n->dist == numeric_limits<int>::max()) {
+                //cout << "    n id = " << n->id << endl;
                 n->dist = curr->dist+1;
                 n->prev = curr;
                 n->visited = true;
                 queue.push(n);
+                //cout << "back of queue is " << queue.back()->id << endl;
             }
         }
+        i++;
     }
     
-    // if no path found, return empty line
-    if (queue.back() != to) {
+    vector<string> pathVec; // vector containing id's of Nodes
+    string pathStr = "";
+    
+    // get path
+    //cout << "Getting path" << endl;
+    curr = to;
+    while(curr != NULL) {
+        pathVec.push_back(curr->id);
+        curr = curr->prev;
+    }
+    
+    /*
+    cout << "pathVec = ";
+    for (std::vector<string>::const_iterator i = pathVec.begin(); i != pathVec.end(); ++i)
+        cout << *i << ' ';
+    cout << endl;
+    
+    cout << "nodes = ";
+    for (int i=0; i<nodes.size(); i++) {
+        cout << nodes[i]->id << " ";
+    }
+    cout << endl;
+    */
+    
+    if (pathVec.back() != from->id){
         return "\n";
         
-    // else, get and return the path
     } else {
-        vector<string> pathVec;
-        string pathStr = "";
-        
-        // get path
-        curr = to;
-        while(curr->prev != NULL) {
-            pathVec.push_back(curr->id);
-            curr = curr->prev;
-        }
-        
         // turn path into string
         while(!pathVec.empty()) {
             pathStr += pathVec.back() + " ";

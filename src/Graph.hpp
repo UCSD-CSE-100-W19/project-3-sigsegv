@@ -12,8 +12,8 @@ using namespace std;
 class Graph {
 public:
     //MAYBE ADD CLASS DATA STRUCTURE(S) HERE
-    vector<Node> nodes;
-    vector<Edge> edges;
+    vector<Node*> nodes;
+    vector<Edge*> edges;
     unordered_map<string,Node*> nodeMap;
     
     //const int INFINITY = numeric_limits<int>::max();

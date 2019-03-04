@@ -1,5 +1,6 @@
 //
 // Sunny Lau     cs100wav
+// Lacey Umamoto lumamoto
 // 2/26/19 
 //
 // Graph.cpp
@@ -34,8 +35,8 @@ Graph::~Graph() {
 }
 
 bool Graph::containsNode(Node * n) {
-    for (int i=0; i<nodes.size(); i++) {
-        if (nodes.at(i).id == n->id) {
+    for (unsigned int i = 0; i < nodes.size() - 1; i++) {
+        if (nodes.at(i)->id == n->id) {
             return true;
         }
     }
@@ -43,7 +44,7 @@ bool Graph::containsNode(Node * n) {
 }
 
 Node* Graph::getNode(string id) {
-    return nodeMap[id];
+    return nodeMap.at(id);
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
@@ -52,16 +53,14 @@ void Graph::addNodesAndEdge(string from, string to) {
     Node * toNode = new Node(to);
     Node * fromNode = new Node(from);
     //push back actual to Node object
-    nodes.push_back(*toNode);
+    nodes.push_back(toNode);
     // add Node to nodeMap
-    //nodeMap.insert({toNode->id, toNode});
     nodeMap[toNode->id] = toNode;
     
     // if fromNode not in Graph, add it to Graph
     if (!containsNode(fromNode)) {
         //push back actual from Node object
-        nodes.push_back(*fromNode);
-        //nodeMap.insert({fromNode->id, fromNode});
+        nodes.push_back(fromNode);
         nodeMap[fromNode->id] = fromNode;
     }
     // add fromNode and toNode to adj vectors
@@ -69,7 +68,7 @@ void Graph::addNodesAndEdge(string from, string to) {
     toNode->adj.push_back(fromNode);
     // add new edge to edges vector
     Edge * newEdge = new Edge(toNode, fromNode);
-    edges.push_back(*newEdge);
+    edges.push_back(newEdge);
 }
 
 /* Read in relationships from an inputfile to create a graph */
@@ -95,7 +94,7 @@ bool Graph::loadFromFile(const char* in_filename) {
         }
         
         // add node and edge to Graph
-        addNodesAndEdge(record[0], record[1]);
+        addNodesAndEdge(record[0],record[1]);
     }
     
     if (!infile.eof()) {
@@ -114,24 +113,25 @@ string Graph::pathfinder(Node* from, Node* to) {
     // infinity = numeric_limits<int>::max()
     queue<Node*> queue;
     
-    for (int k = 0; k < nodes.size(); k++) {
-        nodes[k].dist = numeric_limits<int>::max();
-        nodes[k].prev = NULL;
+    for (unsigned int k = 0; k < nodes.size(); k++) {
+        nodes[k]->dist = numeric_limits<int>::max();
+        nodes[k]->prev = NULL;
     }
 
     queue.push(from);
     from->dist = 0;
     from->visited = true;
     Node* curr = from;
-    //while (curr != to) {
     while (!queue.empty()) {
         curr = queue.front();
         queue.pop();
+		cout << "Before iterating through curr's adj vector" << endl;
         //for each neighbor of curr
-        for (int i = 0; i < curr->adj.size(); i++) {
-            Node * n = curr->adj[i];
+        for (unsigned int i = 0; i < curr->adj.size(); i++) {
+			cout << "In for loop of curr->adj.size()" << endl;
+            Node* n = curr->adj[i];
             if (n->dist == numeric_limits<int>::max()) {
-                n->dist = curr->dist + 1;
+                n->dist = curr->dist+1;
                 n->prev = curr;
                 n->visited = true;
                 queue.push(n);

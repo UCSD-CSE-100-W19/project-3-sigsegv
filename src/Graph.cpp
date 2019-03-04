@@ -130,24 +130,17 @@ string Graph::pathfinder(Node* from, Node* to) {
     Node* curr = from;
     int i = 0;
     while (!queue.empty()) {
-        //cout << "iter #" << i << endl;
         curr = queue.front();
         queue.pop();
-        //cout << "curr = " << curr->id << endl;
-        //cout << "Before iterating through curr's adj vector" << endl;
         //for each neighbor of curr
         for (unsigned int i = 0; i < curr->adj.size(); i++) {
-            //cout << "In for loop of curr->adj.size()" << endl;
-            //cout << "  i = " << i << endl;
             Node* n = curr->adj[i];
             
             if (n->dist == numeric_limits<int>::max()) {
-                //cout << "    n id = " << n->id << endl;
                 n->dist = curr->dist+1;
                 n->prev = curr;
                 n->visited = true;
                 queue.push(n);
-                //cout << "back of queue is " << queue.back()->id << endl;
             }
         }
         i++;
@@ -157,25 +150,11 @@ string Graph::pathfinder(Node* from, Node* to) {
     string pathStr = "";
     
     // get path
-    //cout << "Getting path" << endl;
     curr = to;
     while(curr != NULL) {
         pathVec.push_back(curr->id);
         curr = curr->prev;
     }
-    
-    /*
-    cout << "pathVec = ";
-    for (std::vector<string>::const_iterator i = pathVec.begin(); i != pathVec.end(); ++i)
-        cout << *i << ' ';
-    cout << endl;
-    
-    cout << "nodes = ";
-    for (int i=0; i<nodes.size(); i++) {
-        cout << nodes[i]->id << " ";
-    }
-    cout << endl;
-    */
     
     if (pathVec.back() != from->id){
         return "\n";
@@ -183,10 +162,12 @@ string Graph::pathfinder(Node* from, Node* to) {
     } else {
         // turn path into string
         while(!pathVec.empty()) {
-            pathStr += pathVec.back() + " ";
+            pathStr += pathVec.back();
+			if(pathVec.size() > 1)
+				pathStr += " ";
             pathVec.pop_back();
         }
-        pathStr += "\n";
+		pathStr += "\n";
         return pathStr;
     }
 }

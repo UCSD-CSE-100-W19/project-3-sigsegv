@@ -1,5 +1,6 @@
 //
 // Sunny Lau     cs100wav
+// Lacey Umamoto lumamoto
 // 2/26/19 
 //
 // pathfinder.hpp

@@ -157,8 +157,7 @@ string Graph::pathfinder(Node* from, Node* to) {
     }
     
     if (pathVec.back() != from->id){
-        return "\n";
-        
+        return "";
     } else {
         // turn path into string
         while(!pathVec.empty()) {

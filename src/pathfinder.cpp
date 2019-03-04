@@ -66,9 +66,10 @@ int main(int argc, char* argv[]) {
             fout << "\n";
         }
     }
-    // close in/out file
-    pairfile.close();
-    fout.close();
-    
-    return 0;
+
+// close in/out file
+pairfile.close();
+fout.close();
+
+return 0;
 }

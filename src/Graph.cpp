@@ -40,7 +40,11 @@ bool Graph::containsNode(string id) {
 }
 
 Node* Graph::getNode(string id) {
-    return nodeMap.at(id);
+    if (containsNode(id)) {
+        return nodeMap.at(id);
+    } else {
+        return NULL;
+    }
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
@@ -118,6 +122,8 @@ string Graph::pathfinder(Node* from, Node* to) {
     // infinity = numeric_limits<int>::max()
     queue<Node*> queue;
 
+    if (from == NULL || to == NULL) return "";
+    
     for (unsigned int k = 0; k < nodes.size(); k++) {
         nodes[k]->dist = numeric_limits<int>::max();
         nodes[k]->prev = NULL;
@@ -127,54 +133,29 @@ string Graph::pathfinder(Node* from, Node* to) {
     from->dist = 0;
     from->visited = true;
     Node* curr = from;
-    int i = 0;
     while (!queue.empty()) {
-        //cout << "iter #" << i << endl;
         curr = queue.front();
         queue.pop();
-        //cout << "curr = " << curr->id << endl;
-        //cout << "Before iterating through curr's adj vector" << endl;
-        //for each neighbor of curr
         for (unsigned int i = 0; i < curr->adj.size(); i++) {
-            //cout << "In for loop of curr->adj.size()" << endl;
-            //cout << "  i = " << i << endl;
             Node* n = curr->adj[i];
-            
             if (n->dist == numeric_limits<int>::max()) {
-                //cout << "    n id = " << n->id << endl;
                 n->dist = curr->dist+1;
                 n->prev = curr;
                 n->visited = true;
                 queue.push(n);
-                //cout << "back of queue is " << queue.back()->id << endl;
             }
         }
-        i++;
     }
     
     vector<string> pathVec; // vector containing id's of Nodes
     string pathStr = "";
     
     // get path
-    //cout << "Getting path" << endl;
     curr = to;
     while(curr != NULL) {
         pathVec.push_back(curr->id);
         curr = curr->prev;
     }
-    
-    /*
-    cout << "pathVec = ";
-    for (std::vector<string>::const_iterator i = pathVec.begin(); i != pathVec.end(); ++i)
-        cout << *i << ' ';
-    cout << endl;
-    
-    cout << "nodes = ";
-    for (int i=0; i<nodes.size(); i++) {
-        cout << nodes[i]->id << " ";
-    }
-    cout << endl;
-    */
     
     if (pathVec.back() != from->id){
         return "";

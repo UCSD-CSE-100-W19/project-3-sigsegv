@@ -55,12 +55,12 @@ int main(int argc, char* argv[]) {
     ofstream fout(output_filename);
     
     // get pairs from file
-    string shortestPath;
+    //string shortestPath;
     string p1, p2;
     while (pairfile >> p1 >> p2) {
         Node * node1 = g->getNode(p1);
         Node * node2 = g->getNode(p2);
-        shortestPath = g->pathfinder(node1, node2);
+        string shortestPath = g->pathfinder(node1, node2);
         fout << shortestPath;
     }
     // close in/out file

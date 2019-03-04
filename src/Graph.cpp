@@ -43,7 +43,7 @@ bool Graph::containsNode(Node * n) {
 }
 
 Node* Graph::getNode(string id) {
-    return nodeMap.at(id);
+    return nodeMap[id];
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
@@ -54,13 +54,15 @@ void Graph::addNodesAndEdge(string from, string to) {
     //push back actual to Node object
     nodes.push_back(*toNode);
     // add Node to nodeMap
-    nodeMap.insert({toNode->id, toNode});
+    //nodeMap.insert({toNode->id, toNode});
+    nodeMap[toNode->id] = toNode;
     
     // if fromNode not in Graph, add it to Graph
     if (!containsNode(fromNode)) {
         //push back actual from Node object
         nodes.push_back(*fromNode);
-        nodeMap.insert({fromNode->id, fromNode});
+        //nodeMap.insert({fromNode->id, fromNode});
+        nodeMap[fromNode->id] = fromNode;
     }
     // add fromNode and toNode to adj vectors
     fromNode->adj.push_back(toNode);
@@ -93,7 +95,7 @@ bool Graph::loadFromFile(const char* in_filename) {
         }
         
         // add node and edge to Graph
-        addNodesAndEdge(record[0],record[1]);
+        addNodesAndEdge(record[0], record[1]);
     }
     
     if (!infile.eof()) {
@@ -121,14 +123,15 @@ string Graph::pathfinder(Node* from, Node* to) {
     from->dist = 0;
     from->visited = true;
     Node* curr = from;
-    while (curr != to) {
+    //while (curr != to) {
+    while (!queue.empty()) {
         curr = queue.front();
         queue.pop();
         //for each neighbor of curr
         for (int i = 0; i < curr->adj.size(); i++) {
-            Node* n = curr->adj[i];
+            Node * n = curr->adj[i];
             if (n->dist == numeric_limits<int>::max()) {
-                n->dist = curr->dist+1;
+                n->dist = curr->dist + 1;
                 n->prev = curr;
                 n->visited = true;
                 queue.push(n);

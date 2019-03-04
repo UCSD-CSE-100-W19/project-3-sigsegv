@@ -1,6 +1,5 @@
 //
 // Sunny Lau     cs100wav
-// Lacey Umamoto lumamoto
 // 2/26/19 
 //
 // pathfinder.hpp
@@ -62,7 +61,10 @@ int main(int argc, char* argv[]) {
         Node * node1 = g->getNode(p1);
         Node * node2 = g->getNode(p2);
         shortestPath = g->pathfinder(node1, node2);
-        fout << shortestPath << "\n";
+        fout << shortestPath;
+        if (!pairfile.eof()) {
+            fout << "\n";
+        }
     }
     // close in/out file
     pairfile.close();

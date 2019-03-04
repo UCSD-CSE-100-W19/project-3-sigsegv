@@ -1,11 +1,3 @@
-//
-// Sunny Lau     cs100wav
-// Lacey Umamoto lumamoto
-// 2/26/19 
-//
-// pathfinder.hpp
-// CSE 100 Project 3
-
 #ifndef NODE_HPP
 #define NODE_HPP
 

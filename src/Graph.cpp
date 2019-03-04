@@ -178,16 +178,15 @@ string Graph::pathfinder(Node* from, Node* to) {
     
     if (pathVec.back() != from->id){
         return "";
-        
     } else {
         // turn path into string
-        while(pathVec.size() > 1) {
-            pathStr += pathVec.back() + " ";
+        while(!pathVec.empty()) {
+            pathStr += pathVec.back();
+            // print last elem without space at end
+            if (pathVec.size() > 1)
+                pathStr += " ";
             pathVec.pop_back();
         }
-        // print last elem without space at end
-        pathStr += pathVec.back();
-        pathVec.pop_back();
         return pathStr;
     }
 }

@@ -1,11 +1,3 @@
-//
-// Sunny Lau     cs100wav
-// Lacey Umamoto lumamoto
-// 2/26/19 
-//
-// Graph.hpp
-// CSE 100 Project 3
-
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 

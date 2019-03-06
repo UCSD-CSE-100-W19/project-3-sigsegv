@@ -19,6 +19,7 @@ class Edge {
     Node* n2;
     int weight; // weight of edge (default = 1)
 
+    // Edge constructors
     Edge() : n1(NULL), n2(NULL), weight(1) {}
     Edge(Node* node1, Node* node2) : n1(node1), n2(node2), weight(1) {}
 };

@@ -1,7 +1,7 @@
 //
 // Sunny Lau     cs100wav
 // Lacey Umamoto lumamoto
-// 2/26/19 
+// 2/26/19
 //
 // Graph.cpp
 // CSE 100 Project 3
@@ -27,14 +27,14 @@ Graph::Graph() : nodes(0), edges(0) {}
 
 // Destructor method
 Graph::~Graph() {
-	// For each Node in nodes, delete it
-	for(unsigned int i = 0; i < nodes.size(); i++){
-		delete nodes[i];
-	}
-	// For each Edge in edges, delete it
-	for(unsigned int i = 0; i < edges.size(); i++){
-		delete edges[i];
-	}
+    // For each Node in nodes, delete it
+    for(unsigned int i = 0; i < nodes.size(); i++){
+        delete nodes[i];
+    }
+    // For each Edge in edges, delete it
+    for(unsigned int i = 0; i < edges.size(); i++){
+        delete edges[i];
+    }
 }
 
 // Checks if the hashmap contains the Node object
@@ -66,9 +66,9 @@ void Graph::addNodesAndEdge(string from, string to) {
     Node * fromNode;
     // if to node not in graph
     if (!containsNode(to)) {
-	// Make a new node
+        // Make a new node
         toNode = new Node(to);
-	// Push it onto the vector and insert into the hashmap with the id
+        // Push it onto the vector and insert into the hashmap with the id
         nodes.push_back(toNode);
         nodeMap[toNode->id] = toNode;
     } else {
@@ -77,9 +77,9 @@ void Graph::addNodesAndEdge(string from, string to) {
     
     // if from node not in graph
     if (!containsNode(from)) {
-	// Make a new node
+        // Make a new node
         fromNode = new Node(from);
-	// Push it onto the vector and insert into the hashmap with the id
+        // Push it onto the vector and insert into the hashmap with the id
         nodes.push_back(fromNode);
         nodeMap[fromNode->id] = fromNode;
     } else {
@@ -139,11 +139,11 @@ bool Graph::loadFromFile(const char* in_filename) {
 
 // Pathfinder method
 // Params: Node pointers to find shortest path between from and to nodes
-// Return: String containing the path between from and to, nothing if no path 
+// Return: String containing the path between from and to, nothing if no path
 string Graph::pathfinder(Node* from, Node* to) {
     // infinity = numeric_limits<int>::max()
     queue<Node*> queue;
-
+    
     // Return blank if either params are NULL
     if (from == NULL || to == NULL) return "";
     
@@ -161,14 +161,14 @@ string Graph::pathfinder(Node* from, Node* to) {
     Node* curr = from;
     // While the queue is not empty
     while (!queue.empty()) {
-	// Get the front of the queue and pop it
+        // Get the front of the queue and pop it
         curr = queue.front();
         queue.pop();
-	// For each neighbor of curr
+        // For each neighbor of curr
         for (unsigned int i = 0; i < curr->adj.size(); i++) {
             Node* n = curr->adj[i];
-	    // If the dist of the node is maximum int size, change its dist to curr's dist + 1,
-	    // prev to curr, visited to true, and push it onto the queue
+            // If the dist of the node is maximum int size, change its dist to curr's dist + 1,
+            // prev to curr, visited to true, and push it onto the queue
             if (n->dist == numeric_limits<int>::max()) {
                 n->dist = curr->dist+1;
                 n->prev = curr;

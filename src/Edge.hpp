@@ -14,12 +14,14 @@
 using namespace std;
 
 class Edge {
- public:
-    Node* n1; // two Nodes that Edge is connecting
+public:
+    // two pointers to nodes that edge is connecting
+    Node* n1;
     Node* n2;
-    int weight; // weight of edge (default = 1)
-
-    // Edge constructors
+    
+    // weight of edge (default = 1)
+    int weight;
+    
     Edge() : n1(NULL), n2(NULL), weight(1) {}
     Edge(Node* node1, Node* node2) : n1(node1), n2(node2), weight(1) {}
 };

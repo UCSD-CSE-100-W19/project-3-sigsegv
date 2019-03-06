@@ -19,20 +19,18 @@ using namespace std;
 
 class Graph {
 public:
-    //MAYBE ADD CLASS DATA STRUCTURE(S) HERE
+    // vector containing pointers to all nodes in graph
     vector<Node*> nodes;
-    vector<Edge*> edges;
-    unordered_map<string,Node*> nodeMap;
     
-    //const int INFINITY = numeric_limits<int>::max();
+    // vector containing pointers to all edges in graph
+    vector<Edge*> edges;
+    
+    // hash map that maps a node's id to a pointer to its node
+    unordered_map<string,Node*> nodeMap;
     
     Graph();
     
     ~Graph();
-    
-    //MAYBE ADD SOME MORE METHODS HERE SO AS TO ANSWER QUESTIONS IN YOUR PA
-    
-    /* YOU CAN MODIFY THIS IF YOU LIKE , in_filename : THE INPUT FILENAME */
     
     bool loadFromFile(const char* in_filename);
     

@@ -1,3 +1,11 @@
+//
+// Sunny Lau     cs100wav
+// Lacey Umamoto lumamoto
+// 2/26/19 
+//
+// Edge.hpp
+// CSE 100 Project 3
+
 #ifndef EDGE_HPP
 #define EDGE_HPP
 

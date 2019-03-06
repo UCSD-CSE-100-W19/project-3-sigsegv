@@ -26,12 +26,12 @@ using namespace std;
 Graph::Graph() : nodes(0), edges(0) {}
 
 Graph::~Graph() {
-    while(!nodes.empty()) {
-        nodes.pop_back();
-    }
-    while(!edges.empty()) {
-        edges.pop_back();
-    }
+	for(unsigned int i = 0; i < nodes.size(); i++){
+		delete nodes[i];
+	}
+	for(unsigned int i = 0; i < edges.size(); i++){
+		delete edges[i];
+	}
 }
 
 bool Graph::containsNode(string id) {

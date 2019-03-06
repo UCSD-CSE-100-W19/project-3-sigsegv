@@ -1,8 +1,9 @@
 //
 // Sunny Lau     cs100wav
+// Lacey Umamoto lumamoto
 // 2/26/19 
 //
-// pathfinder.hpp
+// pathfinder.cpp
 // CSE 100 Project 3
 
 #include <cstdlib>
@@ -70,6 +71,8 @@ int main(int argc, char* argv[]) {
 // close in/out file
 pairfile.close();
 fout.close();
+
+delete g;
 
 return 0;
 }

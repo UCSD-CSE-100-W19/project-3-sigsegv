@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     // read in all ids from graph file
     while (graphfile >> id1 >> id2) {
         // add nodes and edges to graph
-        g->addNodesAndEdge(id1, id2);
+        g->addNodes(id1, id2);
     }
     // close graphfile
     graphfile.close();

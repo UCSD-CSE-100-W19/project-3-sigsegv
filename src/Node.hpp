@@ -10,6 +10,9 @@
 #define NODE_HPP
 
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -20,10 +23,17 @@ public:
     Node* prev;     // previously visited Node
     int dist;       // distance from root to Node
     vector<Node*> adj; // vector containing all adjacent Nodes
+    int core;       // core number for node
+    int degree;     // degree (number of edges connected to node)
     
-    Node() : id(0), visited(false), prev(NULL), dist(0), adj() {}
-    Node(string str) : id(str), visited(false), prev(NULL), dist(0), adj() {}
+    Node() : id(0), visited(false), prev(NULL), dist(0), adj(), core(0), degree(0) {}
+    Node(string str) : id(str), visited(false), prev(NULL), dist(0), adj(), core(0), degree(0)  {}
+    
+    
     
 };
+
+
+
 
 #endif  // NODE_HPP

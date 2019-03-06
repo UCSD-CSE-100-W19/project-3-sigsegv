@@ -13,7 +13,6 @@
 #include <vector>
 #include <unordered_map>
 #include "Node.hpp"
-#include "Edge.hpp"
 
 using namespace std;
 
@@ -21,9 +20,6 @@ class Graph {
 public:
     // vector containing pointers to all nodes in graph
     vector<Node*> nodes;
-    
-    // vector containing pointers to all edges in graph
-    vector<Edge*> edges;
     
     // hash map that maps a node's id to a pointer to its node
     unordered_map<string,Node*> nodeMap;
@@ -36,13 +32,17 @@ public:
     
     string pathfinder(Node* from, Node* to);
     
-    void socialgathering(vector<string>& invitees, const int& k);
+    vector<Node*> socialgathering(const int k);
     
-    void addNodesAndEdge(string from, string to);
+    void addNodes(string from, string to);
     
     bool containsNode(string id);
     
     Node* getNode(string id);
+    
+    static bool compareDegrees(Node* n1, Node* n2);
+    static bool compareIds(Node* n1, Node* n2);
+    
 };
 
 #endif  // GRAPH_HPP

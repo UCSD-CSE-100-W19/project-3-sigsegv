@@ -23,17 +23,13 @@
 using namespace std;
 
 // Constructor method
-Graph::Graph() : nodes(0), edges(0) {}
+Graph::Graph() : nodes(0) {}
 
 // Destructor method
 Graph::~Graph() {
     // For each Node in nodes, delete it
     for(unsigned int i = 0; i < nodes.size(); i++){
         delete nodes[i];
-    }
-    // For each Edge in edges, delete it
-    for(unsigned int i = 0; i < edges.size(); i++){
-        delete edges[i];
     }
 }
 
@@ -58,9 +54,9 @@ Node* Graph::getNode(string id) {
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
 //TODO
-// Adds a Node to the hashmap and nodes vector and Edge to the edges vector
+// Adds a Node to the hashmap and nodes vector
 // Params: strings containg the ids of two nodes we want to connect
-void Graph::addNodesAndEdge(string from, string to) {
+void Graph::addNodes(string from, string to) {
     // Node pointers pointing to Node objects with ids from and to
     Node * toNode;
     Node * fromNode;
@@ -90,10 +86,9 @@ void Graph::addNodesAndEdge(string from, string to) {
     fromNode->adj.push_back(toNode);
     toNode->adj.push_back(fromNode);
     
-    // add new edge to edges vector
-    // if edge not in edges
-    //Edge * newEdge = new Edge(toNode, fromNode);
-    //edges.push_back(newEdge);
+    // set degrees of from and to nodes
+    fromNode->degree = fromNode->adj.size();
+    toNode->degree = toNode->adj.size();
 }
 
 /* Read in relationships from an inputfile to create a graph */
@@ -121,8 +116,8 @@ bool Graph::loadFromFile(const char* in_filename) {
             continue;
         }
         
-        // add node and edge to Graph
-        addNodesAndEdge(record[0],record[1]);
+        // add nodes to Graph
+        addNodes(record[0],record[1]);
     }
     
     if (!infile.eof()) {
@@ -204,8 +199,78 @@ string Graph::pathfinder(Node* from, Node* to) {
     }
 }
 
+
+// ------ PART 2 ------
+
+
 /* Implement social gathering*/
-//TODO
-void Graph::socialgathering(vector<string>& invitees, const int& k) {
+//void Graph::socialgathering(vector<string>& invitees, const int& k) {
+vector<Node*> Graph::socialgathering(const int k) {
+    vector<Node*> toInvite;
+    vector<Node*> invitees;
     
+    // copy nodes from nodes vector to toInvite
+    for (int i = 0; i<nodes.size(); i++) {
+        toInvite.push_back(nodes[i]);
+    }
+
+    // order toInvite in increasing order of degrees
+    sort(toInvite.begin(), toInvite.end(), compareDegrees);
+    
+    // for each node in toInvite,
+    for (int i = 0; i < toInvite.size(); i++) {
+        Node * curr = toInvite[i];
+        
+        // set curr node's core = to its degree
+        curr->core = curr->degree;
+        
+        // for each of curr's neighbors, n:
+        for (int j = 0; j < curr->adj.size(); j++) {
+            Node * n = curr->adj[j];
+            
+            // if deg(n) > deg(curr)
+            if (n->degree > curr->degree) {
+                
+                // decrement n's degree
+                n->degree = n->degree - 1;
+                
+                // reorder toInvite
+                sort(toInvite.begin(), toInvite.end(), compareDegrees);
+            }
+        }
+    }
+    
+    cout << "toInvite (id) = ";
+    for (int i=0; i<toInvite.size(); i++) {
+        cout << toInvite[i]->id << " ";
+    }
+    cout << endl;
+    cout << "toInvite (core) = ";
+    for (int i=0; i<toInvite.size(); i++) {
+        cout << toInvite[i]->core << " ";
+    }
+    cout << endl;
+    // after getting core numbers for each node...
+    // for each node,
+    for (int i = 0; i < toInvite.size(); i++) {
+        Node * curr = toInvite[i];
+        // if n's core < k, then add it to invitees vector
+        if (curr->core >= k) {
+            invitees.push_back(curr);
+        }
+    }
+    
+    // sort invitees by id
+    sort(invitees.begin(), invitees.end(), compareIds);
+    
+    // return list of invitees
+    return invitees;
+}
+
+bool Graph::compareDegrees(Node* n1, Node* n2) {
+    return n1->degree < n2->degree;
+}
+
+bool Graph::compareIds(Node* n1, Node* n2) {
+    return stoi(n1->id) < stoi(n2->id);
 }

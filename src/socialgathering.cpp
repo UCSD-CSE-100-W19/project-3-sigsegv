@@ -33,9 +33,7 @@ int main(int argc, char* argv[]) {
     char* output_filename = argv[3];
     
     istringstream ss(argv[2]);
-    
     string str = ss.str();
-    
     int k = stoi(str);
     
     // make a new Graph
@@ -58,7 +56,7 @@ int main(int argc, char* argv[]) {
     ofstream fout(output_filename);
     
     // get invitees
-    vector<Node*> invitees = g->socialgathering(k);
+    vector<Node *> invitees = g->socialgathering(k);
     
     for (int i=0; i<invitees.size(); i++) {
         fout << invitees[i]->id;

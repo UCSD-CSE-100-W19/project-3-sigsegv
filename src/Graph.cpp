@@ -206,20 +206,20 @@ string Graph::pathfinder(Node* from, Node* to) {
 /* Implement social gathering*/
 //void Graph::socialgathering(vector<string>& invitees, const int& k) {
 vector<Node*> Graph::socialgathering(const int k) {
-    vector<Node*> toInvite;
+    //vector<Node*> toInvite;
     vector<Node*> invitees;
     
     // copy nodes from nodes vector to toInvite
-    for (int i = 0; i<nodes.size(); i++) {
-        toInvite.push_back(nodes[i]);
-    }
+    //for (int i = 0; i<nodes.size(); i++) {
+    //    toInvite.push_back(nodes[i]);
+    //}
 
     // order toInvite in increasing order of degrees
-    sort(toInvite.begin(), toInvite.end(), compareDegrees);
+    sort(nodes.begin(), nodes.end(), compareDegrees);
     
     // for each node in toInvite,
-    for (int i = 0; i < toInvite.size(); i++) {
-        Node * curr = toInvite[i];
+    for (int i = 0; i < nodes.size(); i++) {
+        Node * curr = nodes[i];
         
         // set curr node's core = to its degree
         curr->core = curr->degree;
@@ -234,26 +234,16 @@ vector<Node*> Graph::socialgathering(const int k) {
                 // decrement n's degree
                 n->degree = n->degree - 1;
                 
-                // reorder toInvite
-                sort(toInvite.begin(), toInvite.end(), compareDegrees);
+                // reorder nodes
+                sort(nodes.begin(), nodes.end(), compareDegrees);
             }
         }
     }
     
-    cout << "toInvite (id) = ";
-    for (int i=0; i<toInvite.size(); i++) {
-        cout << toInvite[i]->id << " ";
-    }
-    cout << endl;
-    cout << "toInvite (core) = ";
-    for (int i=0; i<toInvite.size(); i++) {
-        cout << toInvite[i]->core << " ";
-    }
-    cout << endl;
     // after getting core numbers for each node...
     // for each node,
-    for (int i = 0; i < toInvite.size(); i++) {
-        Node * curr = toInvite[i];
+    for (int i = 0; i < nodes.size(); i++) {
+        Node * curr = nodes[i];
         // if n's core < k, then add it to invitees vector
         if (curr->core >= k) {
             invitees.push_back(curr);

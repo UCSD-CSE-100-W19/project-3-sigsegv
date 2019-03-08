@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
     // get invitees
     vector<Node *> invitees = g->socialgathering(k);
     
-    for (int i=0; i<invitees.size(); i++) {
+    for (unsigned int i = 0; i < invitees.size(); i++) {
         fout << invitees[i]->id;
         if (i != invitees.size()-1) {
             fout << "\n";

@@ -206,26 +206,36 @@ string Graph::pathfinder(Node* from, Node* to) {
 /* Implement social gathering*/
 //void Graph::socialgathering(vector<string>& invitees, const int& k) {
 vector<Node*> Graph::socialgathering(const int k) {
-    //vector<Node*> toInvite;
+    
+    vector<Node*> toInvite;
     vector<Node*> invitees;
     
     // copy nodes from nodes vector to toInvite
-    //for (int i = 0; i<nodes.size(); i++) {
-    //    toInvite.push_back(nodes[i]);
+    // only add people to invitees if their degree is >= k
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+        //if (nodes[i]->degree >= k) {
+            toInvite.push_back(nodes[i]);
+        //}
+    }
+    
+    // TEST --------------- print out toInvite -----------
+    //cout << "toInvite =" << endl;
+    //for (unsigned int i = 0; i < toInvite.size(); i++) {
+      //  cout << toInvite[i]->id << endl;
     //}
-
+    
     // order toInvite in increasing order of degrees
-    sort(nodes.begin(), nodes.end(), compareDegrees);
+    sort(toInvite.begin(), toInvite.end(), compareDegrees);
     
     // for each node in toInvite,
-    for (int i = 0; i < nodes.size(); i++) {
-        Node * curr = nodes[i];
+    for (unsigned int i = 0; i < toInvite.size(); i++) {
+        Node * curr = toInvite[i];
         
         // set curr node's core = to its degree
         curr->core = curr->degree;
         
         // for each of curr's neighbors, n:
-        for (int j = 0; j < curr->adj.size(); j++) {
+        for (unsigned int j = 0; j < curr->adj.size(); j++) {
             Node * n = curr->adj[j];
             
             // if deg(n) > deg(curr)
@@ -234,16 +244,17 @@ vector<Node*> Graph::socialgathering(const int k) {
                 // decrement n's degree
                 n->degree = n->degree - 1;
                 
-                // reorder nodes
-                sort(nodes.begin(), nodes.end(), compareDegrees);
+                // reorder toInvite
+                sort(toInvite.begin(), toInvite.end(), compareDegrees);
+                
             }
         }
     }
     
     // after getting core numbers for each node...
     // for each node,
-    for (int i = 0; i < nodes.size(); i++) {
-        Node * curr = nodes[i];
+    for (unsigned int i = 0; i < toInvite.size(); i++) {
+        Node * curr = toInvite[i];
         // if n's core < k, then add it to invitees vector
         if (curr->core >= k) {
             invitees.push_back(curr);

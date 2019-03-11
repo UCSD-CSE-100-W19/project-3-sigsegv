@@ -82,13 +82,8 @@ void Graph::addNodes(string from, string to) {
         fromNode = nodeMap[from];
     }
     
-    // add fromNode and toNode to adj vectors
+    // add toNode to fromNode's adj vector
     fromNode->adj.push_back(toNode);
-    toNode->adj.push_back(fromNode);
-    
-    // set degrees of from and to nodes
-    fromNode->degree = fromNode->adj.size();
-    toNode->degree = toNode->adj.size();
 }
 
 /* Read in relationships from an inputfile to create a graph */
@@ -131,147 +126,52 @@ bool Graph::loadFromFile(const char* in_filename) {
 
 /* Implement pathfinder*/
 // return string containing shortest path between from and to
-
 // Pathfinder method
 // Params: Node pointers to find shortest path between from and to nodes
 // Return: String containing the path between from and to, nothing if no path
-string Graph::pathfinder(Node* from, Node* to) {
-    // infinity = numeric_limits<int>::max()
-    queue<Node*> queue;
+vector<string> Graph::DFS(Node* from) {
+    // if from node is not in graph,
+    // then there are no paths starting from it
+    cout << "before checking from" << endl;
+    if (from == NULL) return {};
+    cout << "after checking from" << endl;
+    vector<string> paths; // vector containing paths
     
-    // Return blank if either params are NULL
-    if (from == NULL || to == NULL) return "";
-    
-    // Set all nodes' dist to maximum int size and prev to NULL
-    for (unsigned int k = 0; k < nodes.size(); k++) {
-        nodes[k]->dist = numeric_limits<int>::max();
-        nodes[k]->prev = NULL;
-    }
-    
-    // Push from node onto queue
-    queue.push(from);
-    // Set dist and visited of from to 0 and true, respectively
-    from->dist = 0;
-    from->visited = true;
-    Node* curr = from;
-    // While the queue is not empty
-    while (!queue.empty()) {
-        // Get the front of the queue and pop it
-        curr = queue.front();
-        queue.pop();
-        // For each neighbor of curr
-        for (unsigned int i = 0; i < curr->adj.size(); i++) {
-            Node* n = curr->adj[i];
-            // If the dist of the node is maximum int size, change its dist to curr's dist + 1,
-            // prev to curr, visited to true, and push it onto the queue
-            if (n->dist == numeric_limits<int>::max()) {
-                n->dist = curr->dist+1;
-                n->prev = curr;
-                n->visited = true;
-                queue.push(n);
-            }
+    stack<Node*> toSearch;
+    toSearch.push(from);
+    string path = "";
+    while (!toSearch.empty()) {
+        Node * curr = toSearch.top();
+        toSearch.pop();
+        for (int i=0; i<curr->adj.size(); i++) {
+            Node * n = curr->adj[i];
+            path += n->id + " ";
+            toSearch.push(n);
         }
+        paths.push_back(path);
     }
-    
-    vector<string> pathVec; // vector containing id's of Nodes
-    string pathStr = "";
-    
-    // get path
-    curr = to;
-    while(curr != NULL) {
-        pathVec.push_back(curr->id);
-        curr = curr->prev;
+    cout << "paths = " << endl;
+    for (int i = 0; i < paths.size(); i++) {
+        cout << paths[i] << endl;
     }
-    
-    // If no path, return blank
-    if (pathVec.back() != from->id){
-        return "";
-    } else {
-        // turn path into string
-        while(!pathVec.empty()) {
-            pathStr += pathVec.back();
-            // print last elem without space at end
-            if (pathVec.size() > 1)
-                pathStr += " ";
-            pathVec.pop_back();
-        }
-        return pathStr;
-    }
+    return paths;
 }
 
-
-// ------ PART 2 ------
-
-
-/* Implement social gathering*/
-//void Graph::socialgathering(vector<string>& invitees, const int& k) {
-vector<Node*> Graph::socialgathering(const int k) {
-    
-    vector<Node*> toInvite;
-    vector<Node*> invitees;
-    
-    // copy nodes from nodes vector to toInvite
-    // only add people to invitees if their degree is >= k
-    for (unsigned int i = 0; i < nodes.size(); i++) {
-        //if (nodes[i]->degree >= k) {
-            toInvite.push_back(nodes[i]);
-        //}
-    }
-    
-    // TEST --------------- print out toInvite -----------
-    //cout << "toInvite =" << endl;
-    //for (unsigned int i = 0; i < toInvite.size(); i++) {
-      //  cout << toInvite[i]->id << endl;
-    //}
-    
-    // order toInvite in increasing order of degrees
-    sort(toInvite.begin(), toInvite.end(), compareDegrees);
-    
-    // for each node in toInvite,
-    for (unsigned int i = 0; i < toInvite.size(); i++) {
-        Node * curr = toInvite[i];
-        
-        // set curr node's core = to its degree
-        curr->core = curr->degree;
-        
-        // for each of curr's neighbors, n:
-        for (unsigned int j = 0; j < curr->adj.size(); j++) {
-            Node * n = curr->adj[j];
-            
-            // if deg(n) > deg(curr)
-            if (n->degree > curr->degree) {
-                
-                // decrement n's degree
-                n->degree = n->degree - 1;
-                
-                // reorder toInvite
-                sort(toInvite.begin(), toInvite.end(), compareDegrees);
-                
-            }
-        }
-    }
-    
-    // after getting core numbers for each node...
-    // for each node,
-    for (unsigned int i = 0; i < toInvite.size(); i++) {
-        Node * curr = toInvite[i];
-        // if n's core < k, then add it to invitees vector
-        if (curr->core >= k) {
-            invitees.push_back(curr);
-        }
-    }
-    
-    // sort invitees by id
-    sort(invitees.begin(), invitees.end(), compareIds);
-    
-    // return list of invitees
-    return invitees;
-}
-
-bool Graph::compareDegrees(Node* n1, Node* n2) {
-    return n1->degree < n2->degree;
-}
-
-bool Graph::compareIds(Node* n1, Node* n2) {
-    return stoi(n1->id) < stoi(n2->id);
-}
+/*
+ 
+ while (!stack.empty()) {
+ Node * curr = stack.top();
+ stack.pop();
+ //string path = paths.back() + " ";
+ // for each of curr's neighbors,
+ string path;
+ for (int i = 0; i < curr->adj.size(); i++) {
+ Node * n = curr->adj[i];
+ path = paths.back() + " " + n->id + " ";
+ paths.push_back(path);
+ stack.push(n);
+ //path = "";
+ }
+ //path = from->id + " ";
+ }
+ */

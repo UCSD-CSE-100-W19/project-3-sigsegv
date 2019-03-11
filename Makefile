@@ -17,12 +17,9 @@ BUILDDIR := build
 OBJDIR := $(BUILDDIR)/obj
 
 
-all: init pathfinder socialgathering
+all: init part3
 
-pathfinder: init $(addprefix $(OBJDIR)/,pathfinder.o Graph.o)
-	$(CC) $(LDFLAGS) -o $(BUILDDIR)/$@ $(filter-out init,$^)
-
-socialgathering: init $(addprefix $(OBJDIR)/,socialgathering.o Graph.o)
+part3: init $(addprefix $(OBJDIR)/,part3.o Graph.o)
 	$(CC) $(LDFLAGS) -o $(BUILDDIR)/$@ $(filter-out init,$^)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp

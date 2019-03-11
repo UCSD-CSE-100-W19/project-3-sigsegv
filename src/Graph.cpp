@@ -19,6 +19,7 @@
 #include <stack>
 #include <list>
 #include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -28,6 +29,10 @@ Graph::Graph() : nodes(0) {}
 // Destructor method
 Graph::~Graph() {
     // For each Node in nodes, delete it
+    //for (auto node : nodeMap) {
+    //    delete node.first()
+    //}
+    
     for(unsigned int i = 0; i < nodes.size(); i++){
         delete nodes[i];
     }
@@ -64,7 +69,7 @@ void Graph::addNodes(string from, string to) {
     if (!containsNode(to)) {
         // Make a new node
         toNode = new Node(to);
-        // Push it onto the vector and insert into the hashmap with the id
+        // Insert into the hashmap with the id
         nodes.push_back(toNode);
         nodeMap[toNode->id] = toNode;
     } else {
@@ -75,7 +80,7 @@ void Graph::addNodes(string from, string to) {
     if (!containsNode(from)) {
         // Make a new node
         fromNode = new Node(from);
-        // Push it onto the vector and insert into the hashmap with the id
+        // Insert into the hashmap with the id
         nodes.push_back(fromNode);
         nodeMap[fromNode->id] = fromNode;
     } else {
@@ -204,68 +209,54 @@ string Graph::pathfinder(Node* from, Node* to) {
 
 
 /* Implement social gathering*/
-//void Graph::socialgathering(vector<string>& invitees, const int& k) {
 vector<Node*> Graph::socialgathering(const int k) {
     
     vector<Node*> toInvite;
-    vector<Node*> invitees;
     
-    // copy nodes from nodes vector to toInvite
-    // only add people to invitees if their degree is >= k
+    // copy nodes to toInvite vector
     for (unsigned int i = 0; i < nodes.size(); i++) {
-        //if (nodes[i]->degree >= k) {
-            toInvite.push_back(nodes[i]);
-        //}
+        toInvite.push_back(nodes[i]);
     }
     
-    // TEST --------------- print out toInvite -----------
-    //cout << "toInvite =" << endl;
-    //for (unsigned int i = 0; i < toInvite.size(); i++) {
-      //  cout << toInvite[i]->id << endl;
-    //}
-    
-    // order toInvite in increasing order of degrees
-    sort(toInvite.begin(), toInvite.end(), compareDegrees);
-    
-    // for each node in toInvite,
-    for (unsigned int i = 0; i < toInvite.size(); i++) {
-        Node * curr = toInvite[i];
+    // for each node, n, in toInvite,
+    //for (int i=0; i<toInvite.size(); i++) {
+    while(1) {
+        // get iterator that points to node with smallest degree
+        vector<Node*>::iterator minDeg = min_element(toInvite.begin(), toInvite.end(), compareDegrees);
         
-        // set curr node's core = to its degree
-        curr->core = curr->degree;
+        // get node with min degree
+        Node * minDegNode = *minDeg;
         
-        // for each of curr's neighbors, n:
-        for (unsigned int j = 0; j < curr->adj.size(); j++) {
-            Node * n = curr->adj[j];
+        // if minDegNode's degree < k,
+        if (minDegNode->degree < k) {
             
-            // if deg(n) > deg(curr)
-            if (n->degree > curr->degree) {
+            // then: for each of its neighbors, n:
+            for (unsigned int j = 0; j < minDegNode->adj.size(); j++) {
+                Node * n = minDegNode->adj[j];
                 
-                // decrement n's degree
-                n->degree = n->degree - 1;
-                
-                // reorder toInvite
-                sort(toInvite.begin(), toInvite.end(), compareDegrees);
-                
+                // if deg(n) > deg(curr)
+                if (n->degree > minDegNode->degree) {
+                    
+                    // decrement n's degree
+                    n->degree = n->degree - 1;
+                }
             }
+            
+            // remove the element from toInvite
+            toInvite.erase(minDeg);
+            
+        } else {
+            // if minDegNode's degree > k,
+            // then all remaining nodes in toInvite are core-k
+          break;
         }
     }
     
-    // after getting core numbers for each node...
-    // for each node,
-    for (unsigned int i = 0; i < toInvite.size(); i++) {
-        Node * curr = toInvite[i];
-        // if n's core < k, then add it to invitees vector
-        if (curr->core >= k) {
-            invitees.push_back(curr);
-        }
-    }
-    
-    // sort invitees by id
-    sort(invitees.begin(), invitees.end(), compareIds);
+    // sort toInvite by id
+    sort(toInvite.begin(), toInvite.end(), compareIds);
     
     // return list of invitees
-    return invitees;
+    return toInvite;
 }
 
 bool Graph::compareDegrees(Node* n1, Node* n2) {

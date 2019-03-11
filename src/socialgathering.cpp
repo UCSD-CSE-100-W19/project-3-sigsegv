@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
     if (argc != 4) {
         usage(argv[0]);
     }
+    
     char* graph_filename = argv[1];
     char* output_filename = argv[3];
     

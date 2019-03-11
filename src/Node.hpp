@@ -1,7 +1,7 @@
 //
 // Sunny Lau     cs100wav
 // Lacey Umamoto lumamoto
-// 2/26/19 
+// 2/26/19
 //
 // Node.hpp
 // CSE 100 Project 3
@@ -32,8 +32,5 @@ public:
     
     
 };
-
-
-
 
 #endif  // NODE_HPP

@@ -42,7 +42,6 @@ public:
     
     static bool compareDegrees(Node* n1, Node* n2);
     static bool compareIds(Node* n1, Node* n2);
-    
 };
 
 #endif  // GRAPH_HPP

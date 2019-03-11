@@ -28,9 +28,6 @@ public:
     
     Node() : id(0), visited(false), prev(NULL), dist(0), adj(), core(0), degree(0) {}
     Node(string str) : id(str), visited(false), prev(NULL), dist(0), adj(), core(0), degree(0)  {}
-    
-    
-    
 };
 
 #endif  // NODE_HPP

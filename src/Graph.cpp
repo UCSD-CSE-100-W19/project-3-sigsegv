@@ -29,10 +29,6 @@ Graph::Graph() : nodes(0) {}
 // Destructor method
 Graph::~Graph() {
     // For each Node in nodes, delete it
-    //for (auto node : nodeMap) {
-    //    delete node.first()
-    //}
-    
     for(unsigned int i = 0; i < nodes.size(); i++){
         delete nodes[i];
     }
@@ -58,7 +54,6 @@ Node* Graph::getNode(string id) {
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
-//TODO
 // Adds a Node to the hashmap and nodes vector
 // Params: strings containg the ids of two nodes we want to connect
 void Graph::addNodes(string from, string to) {
@@ -97,7 +92,6 @@ void Graph::addNodes(string from, string to) {
 }
 
 /* Read in relationships from an inputfile to create a graph */
-
 // Loads nodes from file
 // Params: const char pointer to the input file's name
 // Return: Whether or not the file was correctly read
@@ -134,9 +128,7 @@ bool Graph::loadFromFile(const char* in_filename) {
     return true;
 }
 
-/* Implement pathfinder*/
-// return string containing shortest path between from and to
-
+// Returns string containing shortest path between from and to
 // Pathfinder method
 // Params: Node pointers to find shortest path between from and to nodes
 // Return: String containing the path between from and to, nothing if no path
@@ -204,11 +196,13 @@ string Graph::pathfinder(Node* from, Node* to) {
     }
 }
 
-
-// ------ PART 2 ------
-
-
-/* Implement social gathering*/
+/*
+ * Given an integer k, returns a list of nodes, sorted by id,
+ * such that all nodes in the list are connected to at least
+ * k other nodes.
+ * param k the core number
+ * return vector of node pointers that are in k-core
+ */
 vector<Node*> Graph::socialgathering(const int k) {
     
     vector<Node*> toInvite;
@@ -218,8 +212,6 @@ vector<Node*> Graph::socialgathering(const int k) {
         toInvite.push_back(nodes[i]);
     }
     
-    // for each node, n, in toInvite,
-    //for (int i=0; i<toInvite.size(); i++) {
     while(1) {
         // get iterator that points to node with smallest degree
         vector<Node*>::iterator minDeg = min_element(toInvite.begin(), toInvite.end(), compareDegrees);
@@ -248,7 +240,7 @@ vector<Node*> Graph::socialgathering(const int k) {
         } else {
             // if minDegNode's degree > k,
             // then all remaining nodes in toInvite are core-k
-          break;
+            break;
         }
     }
     
@@ -259,10 +251,12 @@ vector<Node*> Graph::socialgathering(const int k) {
     return toInvite;
 }
 
+// Compares two nodes by their degrees
 bool Graph::compareDegrees(Node* n1, Node* n2) {
     return n1->degree < n2->degree;
 }
 
+// Compares two nodes by their ids
 bool Graph::compareIds(Node* n1, Node* n2) {
     return stoi(n1->id) < stoi(n2->id);
 }

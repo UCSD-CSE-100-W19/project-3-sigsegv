@@ -59,16 +59,19 @@ int main(int argc, char* argv[]) {
     // get invitees
     vector<Node *> invitees = g->socialgathering(k);
     
+    // print list of invitees to out file
     for (unsigned int i = 0; i < invitees.size(); i++) {
         fout << invitees[i]->id;
         if (i != invitees.size()-1) {
             fout << "\n";
         }
     }
-
+    
     // close output file
     fout.close();
     
+    //delete graph
     delete g;
+    
     return 0;
 }

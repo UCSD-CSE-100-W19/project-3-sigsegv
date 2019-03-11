@@ -41,6 +41,7 @@ public:
     Node* getNode(string id);
     
     static bool compareDegrees(Node* n1, Node* n2);
+    
     static bool compareIds(Node* n1, Node* n2);
 };
 

@@ -134,7 +134,7 @@ bool Graph::loadFromFile(const char* in_filename) {
 // Return: String containing the path between from and to, nothing if no path
 string Graph::pathfinder(Node* from, Node* to) {
     // infinity = numeric_limits<int>::max()
-    queue<Node*> queue;
+    queue<Node*> toSearch;
     
     // Return blank if either params are NULL
     if (from == NULL || to == NULL) return "";
@@ -146,16 +146,16 @@ string Graph::pathfinder(Node* from, Node* to) {
     }
     
     // Push from node onto queue
-    queue.push(from);
+    toSearch.push(from);
     // Set dist and visited of from to 0 and true, respectively
     from->dist = 0;
     from->visited = true;
     Node* curr = from;
     // While the queue is not empty
-    while (!queue.empty()) {
+    while (!toSearch.empty()) {
         // Get the front of the queue and pop it
-        curr = queue.front();
-        queue.pop();
+        curr = toSearch.front();
+        toSearch.pop();
         // For each neighbor of curr
         for (unsigned int i = 0; i < curr->adj.size(); i++) {
             Node* n = curr->adj[i];
@@ -165,7 +165,7 @@ string Graph::pathfinder(Node* from, Node* to) {
                 n->dist = curr->dist+1;
                 n->prev = curr;
                 n->visited = true;
-                queue.push(n);
+                toSearch.push(n);
             }
         }
     }

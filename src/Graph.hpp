@@ -42,8 +42,8 @@ public:
     Node* getNode(string id);
     
     vector<string> getPaths(Node* from);
-
-	string revOrder(string str);
+    
+    string revOrder(string str);
     
     static bool compareStrings (const string& first, const string& second);
 };

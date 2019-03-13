@@ -63,21 +63,16 @@ int main(int argc, char* argv[]) {
     ofstream fout(output_filename);
     
     // if id corresponds to a valid node,
-    // get paths
     if (g->containsNode(id)) {
         Node * n = g->getNode(id);
+        // get paths vector
         vector<string> paths = g->getPaths(n);
-        int numPaths = paths.size();
-        int i =0;
-        
+        fout << "Total number of paths starting from Node " << n->id << " to NULL: " << paths.size() << "\n\n";
+        // print all paths to output file
         while(!paths.empty()) {
             fout << paths.back() << "\n";
-            cout << i << ": " << paths.back() << "\n";
             paths.pop_back();
-            i++;
         }
-        fout << "Total number of paths starting from Node " << n->id << ": " << numPaths << endl;
-        cout << "Total number of paths starting from Node " << n->id << ": " << numPaths << endl;
     } else {
         fout << "No paths found." << endl;
     }
@@ -85,6 +80,8 @@ int main(int argc, char* argv[]) {
     // close fout
     fout.close();
     
+    // delete graph
     delete g;
+    
     return 0;
 }

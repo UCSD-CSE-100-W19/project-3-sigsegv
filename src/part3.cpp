@@ -62,20 +62,22 @@ int main(int argc, char* argv[]) {
     // open output file
     ofstream fout(output_filename);
     
+    // if id corresponds to a valid node,
     // get paths
-    //cout << "id = " << "'" << id << "'" << endl;
-    //cout << "g->containsNode(id) = " << g->containsNode(id) << endl;
     if (g->containsNode(id)) {
         Node * n = g->getNode(id);
-        vector<string> paths = g->DFS(n);
-        for (unsigned int i = 0; i < paths.size(); i++) {
-			if (paths[i].empty())
-				continue;
-            fout << paths[i];
-            if (i != paths.size()-1) {
-                fout << "\n";
-            }
+        list<string> paths = g->getPaths(n);
+        int numPaths = paths.size();
+        int i =0;
+        
+        while(!paths.empty()) {
+            fout << paths.back() << "\n";
+            cout << i << ": " << paths.back() << "\n";
+            paths.pop_back();
+            i++;
         }
+        fout << "Total number of paths starting from Node " << n->id << ": " << numPaths << endl;
+        cout << "Total number of paths starting from Node " << n->id << ": " << numPaths << endl;
     } else {
         fout << "No paths found." << endl;
     }

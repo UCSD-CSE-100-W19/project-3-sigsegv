@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <list>
 #include "Node.hpp"
 
 using namespace std;
@@ -40,9 +41,11 @@ public:
     
     Node* getNode(string id);
     
-    vector<string> DFS(Node* from);
+    list<string> getPaths(Node* from);
 
 	string revOrder(string str);
+    
+    static bool compareStrings (const string& first, const string& second);
 };
 
 #endif  // GRAPH_HPP

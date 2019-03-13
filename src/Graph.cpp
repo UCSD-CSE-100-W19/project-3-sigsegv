@@ -229,26 +229,36 @@ vector<string> Graph::getPaths(Node* from) {
     return paths;
 }
 
+// Method to reverse order of words in a string
+// Given a string, reverse the order of words based on where a space is in the string
+// Params: string containing what we want to reverse the order of
+// Return: The parameter string with the order of elements is reversed
 string Graph::revOrder(string str) { 
+    // Get the end of the string, have two ints store the length + 1 and start a new string result
     int i = str.length() - 1;
     int start = i + 1;
     int end = i + 1;
     string result = "";
     
+    // While i is greater than 0
     while(i >= 0) {
+        // If the character at that index is a space
         if(str[i] == ' ') {
+            // Increment the start
             start = i + 1;
+            // While the start is not equal to end, append to result the character at start, and increment start
             while(start != end)
                 result += str[start++];
-            
+            // Append a space to the end of result
             result += ' ';
-            
             end = i;
         }
         i--;
     }
     start = 0;
+    // While start does not equal end
     while(start != end)
+        // Append to result the character at start
         result += str[start++];
     
     return result;

@@ -1,7 +1,7 @@
 //
 // Sunny Lau     cs100wav
 // Lacey Umamoto lumamoto
-// 2/26/19
+// 2/26/19 
 //
 // Node.hpp
 // CSE 100 Project 3
@@ -28,6 +28,12 @@ public:
     
     Node() : id(0), visited(false), prev(NULL), dist(0), adj(), core(0), degree(0) {}
     Node(string str) : id(str), visited(false), prev(NULL), dist(0), adj(), core(0), degree(0)  {}
+    
+    
+    
 };
+
+
+
 
 #endif  // NODE_HPP

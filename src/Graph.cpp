@@ -207,26 +207,17 @@ vector<string> Graph::getPaths(Node* from) {
     // sort paths
     sort(paths.begin(), paths.end());
 
-    for (int i=0; i<paths.size()-1; i++) {
+    for (int i=paths.size(); i>0; i--) {
         string s1 = paths[i];
-        string s2 = paths[i+1];
+        string s2 = paths[i-1];
+        // replace duplicate path with ~
         if (s1 == s2) {
-            paths[i+1] = "~";
-        }
-        sort(paths.begin(), paths.end());
-    }
-    
-    //vector<string> newPaths;
-    /*
-    for (int i=0; i<paths.size(); i++) {
-        if (paths[i] != "") {
-            newPaths.push_back(paths[i]);
-        } else {
-            break;
+            paths[i-1] = "~";
+            sort(paths.begin(), paths.end());
         }
     }
-    */
     
+    // remove any removed paths
     while (!paths.empty()) {
         if (paths.back() == "~") {
             paths.pop_back();

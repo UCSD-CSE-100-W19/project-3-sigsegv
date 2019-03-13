@@ -1,0 +1,35 @@
+
+        for (unsigned int i = 0; i < curr->adj.size(); i++) {
+            Node * n = curr->adj[i];
+			if (!n->visited){
+				n->visited = true;
+				n->prev = curr;
+				toSearch.push(n);
+			}
+			if (n->adj.empty()) {
+				list<string> numbers;
+				while(n->prev){
+					numbers.push_front(n->id);
+					n = n->prev;
+				}
+				numbers.push_front(n->id);
+				for (unsigned int j = 0; j < numbers.size(); j++){
+					path += numbers.front() + " ";
+					numbers.pop_front();
+				}
+			}
+        }
+
+
+Say we have "Hello world"
+start from end of string
+have a pointer at end
+decrement pointer until i have a space
+have a second pointer at end
+use substring method and append it to a new string
+on new string, manually add space
+move second pointer to where is first pointer
+and use substring again
+
+dont add an if statement if it only executes once
+

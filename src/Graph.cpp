@@ -211,13 +211,24 @@ vector<string> Graph::getPaths(Node* from) {
         string s1 = paths[i];
         string s2 = paths[i+1];
         if (s1 == s2) {
-            paths[i+1] = "";
+            paths[i+1] = "~";
         }
         sort(paths.begin(), paths.end());
     }
     
+    //vector<string> newPaths;
+    /*
+    for (int i=0; i<paths.size(); i++) {
+        if (paths[i] != "") {
+            newPaths.push_back(paths[i]);
+        } else {
+            break;
+        }
+    }
+    */
+    
     while (!paths.empty()) {
-        if (paths.back() == "") {
+        if (paths.back() == "~") {
             paths.pop_back();
         } else {
             break;

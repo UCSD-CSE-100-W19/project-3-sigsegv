@@ -121,11 +121,10 @@ bool Graph::loadFromFile(const char* in_filename) {
     return true;
 }
 
-/* Implement pathfinder*/
-// return string containing shortest path between from and to
-// Pathfinder method
-// Params: Node pointers to find shortest path between from and to nodes
-// Return: String containing the path between from and to, nothing if no path
+// Returns a vector of paths that start from a given Node and ends at a
+// Node that has no neighbors.
+// Param: Pointer that points to Node you want to start each path from
+// Return: vector of paths
 vector<string> Graph::getPaths(Node* from) {
     // if from node is not in graph,
     // then there are no paths starting from it
@@ -206,7 +205,8 @@ vector<string> Graph::getPaths(Node* from) {
     
     // sort paths
     sort(paths.begin(), paths.end());
-
+    
+    // compare a string with the one previous of it
     for (int i=paths.size(); i>0; i--) {
         string s1 = paths[i];
         string s2 = paths[i-1];
@@ -217,7 +217,7 @@ vector<string> Graph::getPaths(Node* from) {
         }
     }
     
-    // remove any removed paths
+    // remove any "removed" paths from vector
     while (!paths.empty()) {
         if (paths.back() == "~") {
             paths.pop_back();
@@ -233,7 +233,7 @@ vector<string> Graph::getPaths(Node* from) {
 // Given a string, reverse the order of words based on where a space is in the string
 // Params: string containing what we want to reverse the order of
 // Return: The parameter string with the order of elements is reversed
-string Graph::revOrder(string str) { 
+string Graph::revOrder(string str) {
     // Get the end of the string, have two ints store the length + 1 and start a new string result
     int i = str.length() - 1;
     int start = i + 1;
@@ -262,4 +262,4 @@ string Graph::revOrder(string str) {
         result += str[start++];
     
     return result;
-} 
+}

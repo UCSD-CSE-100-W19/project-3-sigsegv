@@ -30,11 +30,7 @@ public:
     ~Graph();
     
     bool loadFromFile(const char* in_filename);
-    
-    string pathfinder(Node* from, Node* to);
-    
-    vector<Node*> socialgathering(const int k);
-    
+
     void addNodes(string from, string to);
     
     bool containsNode(string id);
@@ -44,8 +40,6 @@ public:
     vector<string> getPaths(Node* from);
     
     string revOrder(string str);
-    
-    static bool compareStrings (const string& first, const string& second);
 };
 
 #endif  // GRAPH_HPP

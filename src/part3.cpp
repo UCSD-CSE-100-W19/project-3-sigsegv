@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     // get paths
     if (g->containsNode(id)) {
         Node * n = g->getNode(id);
-        list<string> paths = g->getPaths(n);
+        vector<string> paths = g->getPaths(n);
         int numPaths = paths.size();
         int i =0;
         

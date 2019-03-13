@@ -41,7 +41,7 @@ public:
     
     Node* getNode(string id);
     
-    list<string> getPaths(Node* from);
+    vector<string> getPaths(Node* from);
 
 	string revOrder(string str);
     

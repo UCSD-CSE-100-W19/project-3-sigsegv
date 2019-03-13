@@ -126,12 +126,12 @@ bool Graph::loadFromFile(const char* in_filename) {
 // Pathfinder method
 // Params: Node pointers to find shortest path between from and to nodes
 // Return: String containing the path between from and to, nothing if no path
-list<string> Graph::getPaths(Node* from) {
+vector<string> Graph::getPaths(Node* from) {
     // if from node is not in graph,
     // then there are no paths starting from it
     if (from == NULL) return {};
     
-    list<string> paths; // vector containing paths
+    vector<string> paths; // vector containing paths
     
     // stack containing pointers to nodes that are to be searched
     stack<Node*> toSearch;
@@ -196,7 +196,7 @@ list<string> Graph::getPaths(Node* from) {
                 path.erase(path.length()-1,1);
             }
             
-            // add the path to paths list
+            // add path to paths list
             paths.push_back(path);
             
             // erase substring in strPath from 0 to end of delimiter string
@@ -204,23 +204,27 @@ list<string> Graph::getPaths(Node* from) {
         }
     }
     
-    // sort paths list
-    paths.sort();
-    
-    // remove all duplicate paths from paths list
-    unique(paths.begin(), paths.end());
+    // sort paths
+    sort(paths.begin(), paths.end());
 
-    return paths;
-}
-
-bool Graph::compareStrings (const string& first, const string& second) {
-    unsigned int i=0;
-    while ( (i<first.length()) && (i<second.length()) )
-    {
-        if (first[i] < second[i]) return true;
-        else if (first[i] > second[i]) return false;
-        ++i;
+    for (int i=0; i<paths.size()-1; i++) {
+        string s1 = paths[i];
+        string s2 = paths[i+1];
+        if (s1 == s2) {
+            paths[i+1] = "";
+        }
+        sort(paths.begin(), paths.end());
     }
+    
+    while (!paths.empty()) {
+        if (paths.back() == "") {
+            paths.pop_back();
+        } else {
+            break;
+        }
+    }
+    
+    return paths;
 }
 
 string Graph::revOrder(string str) { 

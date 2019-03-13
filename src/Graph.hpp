@@ -41,6 +41,8 @@ public:
     Node* getNode(string id);
     
     vector<string> DFS(Node* from);
+
+	string revOrder(string str);
 };
 
 #endif  // GRAPH_HPP

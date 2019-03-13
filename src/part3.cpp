@@ -63,12 +63,14 @@ int main(int argc, char* argv[]) {
     ofstream fout(output_filename);
     
     // get paths
-    cout << "id = " << "'" << id << "'" << endl;
-    cout << "g->containsNode(id) = " << g->containsNode(id) << endl;
+    //cout << "id = " << "'" << id << "'" << endl;
+    //cout << "g->containsNode(id) = " << g->containsNode(id) << endl;
     if (g->containsNode(id)) {
         Node * n = g->getNode(id);
         vector<string> paths = g->DFS(n);
-        for (int i=0; i<paths.size(); i++) {
+        for (unsigned int i = 0; i < paths.size(); i++) {
+			if (paths[i].empty())
+				continue;
             fout << paths[i];
             if (i != paths.size()-1) {
                 fout << "\n";

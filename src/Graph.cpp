@@ -50,7 +50,6 @@ Node* Graph::getNode(string id) {
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
-//TODO
 // Adds a Node to the hashmap and nodes vector
 // Params: strings containg the ids of two nodes we want to connect
 void Graph::addNodes(string from, string to) {
@@ -84,7 +83,6 @@ void Graph::addNodes(string from, string to) {
 }
 
 /* Read in relationships from an inputfile to create a graph */
-
 // Loads nodes from file
 // Params: const char pointer to the input file's name
 // Return: Whether or not the file was correctly read
@@ -183,8 +181,9 @@ vector<string> Graph::getPaths(Node* from) {
             // (this does not include the starting node)
             path = strPath.substr(0,pos);
             
-            path += " " + from->id; // append starting node
+            path += " " + from->id + " "; // append starting node
             path = revOrder(path); // reverse the order of path
+            
             
             // if it exists, remove leading space character
             if (path.at(0) == ' ') {
@@ -229,37 +228,44 @@ vector<string> Graph::getPaths(Node* from) {
     return paths;
 }
 
+
 // Method to reverse order of words in a string
 // Given a string, reverse the order of words based on where a space is in the string
 // Params: string containing what we want to reverse the order of
 // Return: The parameter string with the order of elements is reversed
 string Graph::revOrder(string str) {
-    // Get the end of the string, have two ints store the length + 1 and start a new string result
-    int i = str.length() - 1;
-    int start = i + 1;
-    int end = i + 1;
-    string result = "";
+    // delimiter; denotes the start of a new path
+    string delim = " ";
+    size_t pos = 0;
+    string elem;
+    stack<string> elements;
+    string newStr = "";
     
-    // While i is greater than 0
-    while(i >= 0) {
-        // If the character at that index is a space
-        if(str[i] == ' ') {
-            // Increment the start
-            start = i + 1;
-            // While the start is not equal to end, append to result the character at start, and increment start
-            while(start != end)
-                result += str[start++];
-            // Append a space to the end of result
-            result += ' ';
-            end = i;
-        }
-        i--;
+    // traverse through string until delim is found
+    while((pos = str.find(delim)) != string::npos) {
+        // get the substring leading up to the delim
+        elem = str.substr(0,pos);
+
+        // push elem to stack
+        elements.push(elem);
+        
+        // erase substring in str from 0 to end of delimiter string
+        str.erase(0, pos + delim.length());
     }
-    start = 0;
-    // While start does not equal end
-    while(start != end)
-        // Append to result the character at start
-        result += str[start++];
     
-    return result;
+    while (!elements.empty()) {
+        newStr += elements.top() + " ";
+        elements.pop();
+    }
+    
+    // if it exists, remove leading space character
+    if (newStr.at(0) == ' ') {
+        newStr.erase(0,1);
+    }
+    // if it exists, remove trailing space character
+    if (newStr.at(newStr.length()-1) == ' ') {
+        newStr.erase(newStr.length()-1,1);
+    }
+    
+    return newStr;
 }

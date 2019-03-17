@@ -11,11 +11,15 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <set>
 #include <sstream>
 #include <string>
 #include <utility>
+#include <queue>
 #include <stack>
 #include <list>
+#include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -50,7 +54,6 @@ Node* Graph::getNode(string id) {
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
-//TODO
 // Adds a Node to the hashmap and nodes vector
 // Params: strings containg the ids of two nodes we want to connect
 void Graph::addNodes(string from, string to) {
@@ -61,7 +64,7 @@ void Graph::addNodes(string from, string to) {
     if (!containsNode(to)) {
         // Make a new node
         toNode = new Node(to);
-        // Push it onto the vector and insert into the hashmap with the id
+        // Insert into the hashmap with the id
         nodes.push_back(toNode);
         nodeMap[toNode->id] = toNode;
     } else {
@@ -72,19 +75,23 @@ void Graph::addNodes(string from, string to) {
     if (!containsNode(from)) {
         // Make a new node
         fromNode = new Node(from);
-        // Push it onto the vector and insert into the hashmap with the id
+        // Insert into the hashmap with the id
         nodes.push_back(fromNode);
         nodeMap[fromNode->id] = fromNode;
     } else {
         fromNode = nodeMap[from];
     }
     
-    // add toNode to fromNode's adj vector
+    // add fromNode and toNode to adj vectors
     fromNode->adj.push_back(toNode);
+    toNode->adj.push_back(fromNode);
+    
+    // set degrees of from and to nodes
+    fromNode->degree = fromNode->adj.size();
+    toNode->degree = toNode->adj.size();
 }
 
 /* Read in relationships from an inputfile to create a graph */
-
 // Loads nodes from file
 // Params: const char pointer to the input file's name
 // Return: Whether or not the file was correctly read
@@ -121,129 +128,135 @@ bool Graph::loadFromFile(const char* in_filename) {
     return true;
 }
 
-/* Implement pathfinder*/
-// return string containing shortest path between from and to
+// Returns string containing shortest path between from and to
 // Pathfinder method
 // Params: Node pointers to find shortest path between from and to nodes
 // Return: String containing the path between from and to, nothing if no path
-list<string> Graph::getPaths(Node* from) {
-    // if from node is not in graph,
-    // then there are no paths starting from it
-    if (from == NULL) return {};
+string Graph::pathfinder(Node* from, Node* to) {
+    // infinity = numeric_limits<int>::max()
+    queue<Node*> toSearch;
     
-    list<string> paths; // vector containing paths
+    // Return blank if either params are NULL
+    if (from == NULL || to == NULL) return "";
     
-    // stack containing pointers to nodes that are to be searched
-    stack<Node*> toSearch;
-    
-    // set all nodes to unvisited and their prev node to null
-    for (unsigned int i = 0; i < nodes.size(); i++){
-        nodes[i]->visited = false;
-        nodes[i]->prev = NULL;
+    // Set all nodes' dist to maximum int size and prev to NULL
+    for (unsigned int k = 0; k < nodes.size(); k++) {
+        nodes[k]->dist = numeric_limits<int>::max();
+        nodes[k]->prev = NULL;
     }
     
-    // push from node to stack
+    // Push from node onto queue
     toSearch.push(from);
+    // Set dist and visited of from to 0 and true, respectively
+    from->dist = 0;
     from->visited = true;
-    
+    Node* curr = from;
+    // While the queue is not empty
     while (!toSearch.empty()) {
-        Node * curr = toSearch.top();
+        // Get the front of the queue and pop it
+        curr = toSearch.front();
         toSearch.pop();
-        string strPath = "";
-        
-        // for each of curr's neighbors, n
+        // For each neighbor of curr
         for (unsigned int i = 0; i < curr->adj.size(); i++) {
-            Node * n = curr->adj[i];
-            // if n is unvisited,
-            if (!n->visited){
-                n->visited = true;
+            Node* n = curr->adj[i];
+            // If the dist of the node is maximum int size, change its dist to curr's dist + 1,
+            // prev to curr, visited to true, and push it onto the queue
+            if (n->dist == numeric_limits<int>::max()) {
+                n->dist = curr->dist+1;
                 n->prev = curr;
+                n->visited = true;
                 toSearch.push(n);
             }
-            // if n has no neighbors,
-            // get path by traversing backwards
-            if (n->adj.empty()) {
-                strPath += " ";
-                while(n->prev){
-                    strPath += n->id + " ";
-                    n = n->prev;
+        }
+    }
+    
+    vector<string> pathVec; // vector containing id's of Nodes
+    string pathStr = "";
+    
+    // get path
+    curr = to;
+    while(curr != NULL) {
+        pathVec.push_back(curr->id);
+        curr = curr->prev;
+    }
+    
+    // If no path, return blank
+    if (pathVec.back() != from->id){
+        return "";
+    } else {
+        // turn path into string
+        while(!pathVec.empty()) {
+            pathStr += pathVec.back();
+            // print last elem without space at end
+            if (pathVec.size() > 1)
+                pathStr += " ";
+            pathVec.pop_back();
+        }
+        return pathStr;
+    }
+}
+
+/*
+ * Given an integer k, returns a list of nodes, sorted by id,
+ * such that all nodes in the list are connected to at least
+ * k other nodes.
+ * param k the core number
+ * return vector of node pointers that are in k-core
+ */
+vector<Node*> Graph::socialgathering(const int k) {
+    
+    vector<Node*> toInvite;
+    
+    // copy nodes to toInvite vector
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+        toInvite.push_back(nodes[i]);
+    }
+    
+    while(1) {
+        // get iterator that points to node with smallest degree
+        vector<Node*>::iterator minDeg = min_element(toInvite.begin(), toInvite.end(), compareDegrees);
+        
+        // get node with min degree
+        Node * minDegNode = *minDeg;
+        
+        // if minDegNode's degree < k,
+        if (minDegNode->degree < k) {
+            
+            // then: for each of its neighbors, n:
+            for (unsigned int j = 0; j < minDegNode->adj.size(); j++) {
+                Node * n = minDegNode->adj[j];
+                
+                // if deg(n) > deg(curr)
+                if (n->degree > minDegNode->degree) {
+                    
+                    // decrement n's degree
+                    n->degree = n->degree - 1;
                 }
-                strPath += n->id;
-            }
-        }
-        
-        // delimiter; denotes the start of a new path
-        string delim = " " + from->id + " ";
-        
-        size_t pos = 0;
-        string path;
-        
-        // traverse through string until delim is found
-        while((pos = strPath.find(delim)) != string::npos) {
-            // get the substring leading up to the delim
-            // (this does not include the starting node)
-            path = strPath.substr(0,pos);
-            
-            path += " " + from->id; // append starting node
-            path = revOrder(path); // reverse the order of path
-            
-            // if it exists, remove leading space character
-            if (path.at(0) == ' ') {
-                path.erase(0,1);
-            }
-            // if it exists, remove trailing space character
-            if (path.at(path.length()-1) == ' ') {
-                path.erase(path.length()-1,1);
             }
             
-            // add the path to paths list
-            paths.push_back(path);
+            // remove the element from toInvite
+            toInvite.erase(minDeg);
             
-            // erase substring in strPath from 0 to end of delimiter string
-            strPath.erase(0, pos + delim.length());
+        } else {
+            // if minDegNode's degree > k,
+            // then all remaining nodes in toInvite are core-k
+            break;
         }
     }
     
-    // sort paths list
-    paths.sort();
+    // sort toInvite by id
+    sort(toInvite.begin(), toInvite.end(), compareIds);
     
-    // remove all duplicate paths from paths list
-    unique(paths.begin(), paths.end());
-
-    return paths;
+    // return list of invitees
+    return toInvite;
 }
 
-bool Graph::compareStrings (const string& first, const string& second) {
-    unsigned int i=0;
-    while ( (i<first.length()) && (i<second.length()) )
-    {
-        if (first[i] < second[i]) return true;
-        else if (first[i] > second[i]) return false;
-        ++i;
-    }
+// Compares two nodes by their degrees
+bool Graph::compareDegrees(Node* n1, Node* n2) {
+    return n1->degree < n2->degree;
 }
 
-string Graph::revOrder(string str) { 
-    int i = str.length() - 1;
-    int start = i + 1;
-    int end = i + 1;
-    string result = "";
-    
-    while(i >= 0) {
-        if(str[i] == ' ') {
-            start = i + 1;
-            while(start != end)
-                result += str[start++];
-            
-            result += ' ';
-            
-            end = i;
-        }
-        i--;
-    }
-    start = 0;
-    while(start != end)
-        result += str[start++];
-    
-    return result;
-} 
+// Compares two nodes by their ids
+bool Graph::compareIds(Node* n1, Node* n2) {
+    return stoi(n1->id) < stoi(n2->id);
+}

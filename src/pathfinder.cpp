@@ -75,9 +75,9 @@ int main(int argc, char* argv[]) {
         // print path to output file
         fout << shortestPath;
         // don't print a new line at the end of the file
-        if (!pairfile.eof()) {
-            fout << "\n";
-        }
+        //if (!pairfile.eof()) {
+        fout << "\n";
+        //}
     }
     
     // close pairfile and fout
